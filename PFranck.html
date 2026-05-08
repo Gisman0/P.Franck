@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noces d'Argent Sacerdotales — P. Franck</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cinzel:wght@400;500;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --silver: #C0C0C0;
+    --silver-light: #E8E8E8;
+    --cream: #FAF7F0;
+    --deep: #1A1410;
+    --text: #2C2418;
+    --overlay: rgba(15, 10, 5, 0.72);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Lato', sans-serif;
+    background: var(--deep);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND ── */
+  .bg-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .bg-photo {
+    position: absolute;
+    inset: 0;
+    background: url('VOTRE_PHOTO_ICI.jpg') center center / cover no-repeat;
+    filter: brightness(0.45) saturate(0.8);
+    transform: scale(1.05);
+    animation: slowZoom 30s ease-in-out infinite alternate;
+  }
+
+  /* Fallback si pas de photo — dégradé luxueux */
+  .bg-photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 40%, rgba(139, 105, 20, 0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 75% 65%, rgba(90, 70, 20, 0.3) 0%, transparent 65%),
+      linear-gradient(160deg, #1a1005 0%, #0d0c08 50%, #120f0a 100%);
+    z-index: 1;
+  }
+
+  @keyframes slowZoom {
+    from { transform: scale(1.05); }
+    to   { transform: scale(1.12); }
+  }
+
+  .bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 2;
+  }
+
+  /* vignette dégradé en bas pour lisibilité */
+  .bg-vignette {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, transparent 30%, rgba(10,7,3,0.5) 100%);
+    z-index: 3;
+  }
+
+  /* ── PARTICLES ── */
+  .particles {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp var(--dur, 8s) var(--delay, 0s) ease-in infinite;
+  }
+
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(0) translateX(0); }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-80vh) translateX(var(--drift, 20px)); }
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px 80px;
+  }
+
+  /* ── ORNEMENTS ── */
+  .ornament {
+    color: var(--gold);
+    font-size: 1.4rem;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+    margin: 0 8px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .divider-line {
+    flex: 1;
+    max-width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .divider-cross {
+    color: var(--gold);
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    max-width: 780px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1.2s 0.3s ease forwards;
+  }
+
+  .pre-title {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 28px;
+  }
+
+  .main-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 400;
+    font-size: clamp(1.9rem, 5vw, 3.2rem);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(201, 168, 76, 0.3);
+    margin-bottom: 14px;
+  }
+
+  .main-title .silver {
+    color: var(--silver-light);
+    font-style: italic;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(2rem, 6vw, 3.8rem);
+    color: var(--gold-light);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    display: block;
+    margin-top: 10px;
+  }
+
+  /* ── CROSS SYMBOL ── */
+  .cross-container {
+    margin: 30px auto 20px;
+    opacity: 0;
+    transform: scale(0.7);
+    animation: fadeScale 1.4s 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  .cross-svg {
+    width: 64px;
+    height: 64px;
+    filter: drop-shadow(0 0 18px rgba(201,168,76,0.5));
+  }
+
+  @keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  /* ── DATE BOX ── */
+  .date-block {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin: 32px 0 40px;
+    opacity: 0;
+    animation: fadeUp 1s 1s ease forwards;
+  }
+
+  .date-card {
+    background: rgba(201, 168, 76, 0.08);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    border-radius: 4px;
+    padding: 18px 28px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: background 0.3s, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .date-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .date-card:hover::before { opacity: 1; }
+  .date-card:hover { border-color: rgba(201, 168, 76, 0.55); }
+
+  .date-card .label {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .date-card .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s ease forwards;
+  }
+
+  .count-unit {
+    text-align: center;
+    min-width: 60px;
+  }
+
+  .count-num {
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--gold-light);
+    display: block;
+    line-height: 1;
+  }
+
+  .count-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .count-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.4;
+    align-self: flex-start;
+    padding-top: 2px;
+  }
+
+  /* ── FORM SECTION ── */
+  .form-container {
+    width: 100%;
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeUp 1.1s 1.4s ease forwards;
+  }
+
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 1.6rem;
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+
+  .form-subtitle {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 30px;
+  }
+
+  .form-deadline {
+    text-align: center;
+    font-size: 0.78rem;
+    color: rgba(201, 168, 76, 0.7);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .form-card {
+    background: rgba(10, 8, 5, 0.55);
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    border-radius: 6px;
+    padding: 36px 40px 40px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.1);
+  }
+
+  .field {
+    margin-bottom: 22px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .field input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 3px;
+    padding: 12px 16px;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  }
+
+  .field input::placeholder {
+    color: rgba(255,255,255,0.18);
+    font-style: italic;
+  }
+
+  .field input:focus {
+    border-color: rgba(201,168,76,0.6);
+    background: rgba(255,255,255,0.07);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+
+  .field input:valid:not(:placeholder-shown) {
+    border-color: rgba(201,168,76,0.45);
+  }
+
+  /* ── SUBMIT BTN ── */
+  .btn-submit {
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    border: none;
+    border-radius: 3px;
+    color: var(--deep);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-position 0.5s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-25deg);
+    transition: left 0.6s;
+  }
+
+  .btn-submit:hover { background-position: 0 0; box-shadow: 0 6px 30px rgba(201,168,76,0.45); transform: translateY(-1px); }
+  .btn-submit:hover::before { left: 130%; }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* ── SUCCESS STATE ── */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .success-msg.show { display: block; }
+
+  .success-icon {
+    font-size: 3rem;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 16px;
+    animation: fadeScale 0.7s ease;
+  }
+
+  .success-msg h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+
+  .success-msg p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 60px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 1s 1.7s ease forwards;
+  }
+
+  .footer p {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 560px) {
+    .form-card { padding: 28px 22px 30px; }
+    .date-block { gap: 10px; }
+    .date-card { padding: 14px 18px; }
+    .countdown { gap: 12px; }
+    .count-num { font-size: 1.7rem; }
+  }
+
+  /* ── ERROR ── */
+  .field-error {
+    font-size: 0.72rem;
+    color: #E2765C;
+    margin-top: 5px;
+    display: none;
+  }
+
+  .field.has-error input { border-color: rgba(226,118,92,0.6); }
+  .field.has-error .field-error { display: block; }
+
+  /* ── SPINNER ── */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(20,15,5,0.3);
+    border-top-color: var(--deep);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- ARRIÈRE-PLAN -->
+<div class="bg-scene">
+  <div class="bg-photo" id="bgPhoto"></div>
+  <div class="bg-overlay"></div>
+  <div class="bg-vignette"></div>
+  <div class="particles" id="particles"></div>
+</div>
+
+<!-- PAGE -->
+<main class="page">
+
+  <!-- En-tête -->
+  <header class="header">
+    <p class="pre-title">Vous êtes cordialement invité(e) à célébrer</p>
+
+    <h1 class="main-title">
+      Noces d'<span class="silver">Argent</span><br>Sacerdotales
+    </h1>
+
+    <!-- Croix ornementale -->
+    <div class="cross-container">
+      <svg class="cross-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="32" y1="6" x2="32" y2="58" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/>
+        <line x1="12" y1="22" x2="52" y2="22" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="6"  r="2" fill="#C9A84C"/>
+        <circle cx="32" cy="58" r="2" fill="#C9A84C"/>
+        <circle cx="12" cy="22" r="2" fill="#C9A84C"/>
+        <circle cx="52" cy="22" r="2" fill="#C9A84C"/>
+        <!-- rayons -->
+        <line x1="32" y1="2" x2="32" y2="6"   stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
+        <line x1="32" y1="58" x2="32" y2="62" stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
+        <line x1="8"  y1="22" x2="12" y2="22" stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
+        <line x1="52" y1="22" x2="56" y2="22" stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
+        <!-- halo -->
+        <circle cx="32" cy="22" r="5" stroke="#C9A84C" stroke-width="0.7" opacity="0.35"/>
+        <circle cx="32" cy="22" r="9" stroke="#C9A84C" stroke-width="0.4" opacity="0.18"/>
+      </svg>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-cross">✦</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <span class="hero-name">P. Franck</span>
+
+    <div class="divider" style="margin-top:18px">
+      <div class="divider-line"></div>
+      <span class="divider-cross">✦</span>
+      <div class="divider-line"></div>
+    </div>
+  </header>
+
+  <!-- Infos date/heure -->
+  <div class="date-block">
+    <div class="date-card">
+      <span class="label">Date</span>
+      <span class="value">11 Juillet 2026</span>
+    </div>
+    <div class="date-card">
+      <span class="label">Heure</span>
+      <span class="value">11h00</span>
+    </div>
+  </div>
+
+  <!-- Compte à rebours -->
+  <div class="countdown" id="countdown">
+    <div class="count-unit">
+      <span class="count-num" id="cntJ">—</span>
+      <span class="count-label">Jours</span>
+    </div>
+    <span class="count-sep">:</span>
+    <div class="count-unit">
+      <span class="count-num" id="cntH">—</span>
+      <span class="count-label">Heures</span>
+    </div>
+    <span class="count-sep">:</span>
+    <div class="count-unit">
+      <span class="count-num" id="cntM">—</span>
+      <span class="count-label">Min</span>
+    </div>
+    <span class="count-sep">:</span>
+    <div class="count-unit">
+      <span class="count-num" id="cntS">—</span>
+      <span class="count-label">Sec</span>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <section class="form-container">
+    <h2 class="form-title">Confirmer ma présence</h2>
+    <p class="form-subtitle">Inscription des invités</p>
+    <p class="form-deadline">⏳ Clôture des inscriptions : 30 Juin 2026</p>
+
+    <div class="form-card">
+
+      <!-- Formulaire principal -->
+      <div id="formWrap">
+        <div class="field" id="field-nom">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" placeholder="Votre nom de famille" required autocomplete="family-name">
+          <span class="field-error">Ce champ est requis.</span>
+        </div>
+
+        <div class="field" id="field-prenom">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required autocomplete="given-name">
+          <span class="field-error">Ce champ est requis.</span>
+        </div>
+
+        <div class="field" id="field-whatsapp">
+          <label for="whatsapp">Numéro WhatsApp</label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="+229 XX XX XX XX" required autocomplete="tel">
+          <span class="field-error">Veuillez indiquer un numéro valide.</span>
+        </div>
+
+        <div class="field" id="field-email">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="email" placeholder="votre@email.com" required autocomplete="email">
+          <span class="field-error">Veuillez indiquer une adresse e-mail valide.</span>
+        </div>
+
+        <button class="btn-submit" id="btnSubmit" type="button" onclick="submitForm()">
+          Confirmer ma présence
+        </button>
+      </div>
+
+      <!-- Message succès -->
+      <div class="success-msg" id="successMsg">
+        <span class="success-icon">✝</span>
+        <h3>Inscription confirmée</h3>
+        <p>Merci de rejoindre cette célébration exceptionnelle.<br>Nous vous attendons avec joie le <strong>11 Juillet 2026</strong>.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="divider">
+      <div class="divider-line" style="max-width:60px"></div>
+      <span class="divider-cross" style="font-size:0.6rem">✦</span>
+      <div class="divider-line" style="max-width:60px"></div>
+    </div>
+    <p>25 ans de sacerdoce · Deo gratias</p>
+  </footer>
+
+</main>
+
+<script>
+  /* ──────────────────────────────────────────
+     CONFIGURATION — modifier ici
+  ────────────────────────────────────────── */
+
+  // ① Collez ici l'URL de votre Google Apps Script Web App
+  const GOOGLE_SCRIPT_URL = 'VOTRE_URL_GOOGLE_SCRIPT_ICI';
+
+  // ② Pour afficher votre photo en arrière-plan :
+  //    - Hébergez la photo en ligne (Google Drive, Imgur, etc.)
+  //    - Remplacez l'URL ci-dessous
+  const PHOTO_URL = 'VOTRE_PHOTO_ICI.jpg';
+
+  /* ──────────────────────────────────────────
+     INIT PHOTO
+  ────────────────────────────────────────── */
+  if (PHOTO_URL !== 'VOTRE_PHOTO_ICI.jpg') {
+    document.getElementById('bgPhoto').style.backgroundImage = `url('${PHOTO_URL}')`;
+  }
+
+  /* ──────────────────────────────────────────
+     PARTICLES
+  ────────────────────────────────────────── */
+  const pCont = document.getElementById('particles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.bottom = '-4px';
+    p.style.setProperty('--dur', (7 + Math.random() * 12) + 's');
+    p.style.setProperty('--delay', (Math.random() * 15) + 's');
+    p.style.setProperty('--drift', ((Math.random() - 0.5) * 80) + 'px');
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    p.style.opacity = (0.2 + Math.random() * 0.5).toString();
+    pCont.appendChild(p);
+  }
+
+  /* ──────────────────────────────────────────
+     COMPTE À REBOURS — 11 juillet 2026 à 11h00
+  ────────────────────────────────────────── */
+  const target = new Date('2026-07-11T11:00:00');
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML =
+        '<p style="color:var(--gold-light);font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.4rem">La célébration a commencé ✝</p>';
+      return;
+    }
+    const j = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000)  / 60000);
+    const s = Math.floor((diff % 60000)    / 1000);
+    document.getElementById('cntJ').textContent = String(j).padStart(2,'0');
+    document.getElementById('cntH').textContent = String(h).padStart(2,'0');
+    document.getElementById('cntM').textContent = String(m).padStart(2,'0');
+    document.getElementById('cntS').textContent = String(s).padStart(2,'0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ──────────────────────────────────────────
+     VALIDATION & SOUMISSION
+  ────────────────────────────────────────── */
+  function validate() {
+    let ok = true;
+
+    const fields = [
+      { id: 'nom',      test: v => v.trim().length >= 2 },
+      { id: 'prenom',   test: v => v.trim().length >= 2 },
+      { id: 'whatsapp', test: v => /^[\d\s\+\-\(\)]{7,}$/.test(v.trim()) },
+      { id: 'email',    test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    ];
+
+    fields.forEach(f => {
+      const input = document.getElementById(f.id);
+      const fieldDiv = document.getElementById('field-' + f.id);
+      if (!f.test(input.value)) {
+        fieldDiv.classList.add('has-error');
+        ok = false;
+      } else {
+        fieldDiv.classList.remove('has-error');
+      }
+    });
+
+    return ok;
+  }
+
+  async function submitForm() {
+    if (!validate()) return;
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Envoi en cours…';
+
+    const payload = {
+      nom:      document.getElementById('nom').value.trim(),
+      prenom:   document.getElementById('prenom').value.trim(),
+      whatsapp: document.getElementById('whatsapp').value.trim(),
+      email:    document.getElementById('email').value.trim(),
+      horodatage: new Date().toLocaleString('fr-FR'),
+    };
+
+    if (GOOGLE_SCRIPT_URL === 'VOTRE_URL_GOOGLE_SCRIPT_ICI') {
+      // MODE DÉMO — affiche simplement le succès
+      setTimeout(showSuccess, 800);
+      return;
+    }
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      showSuccess();
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = 'Confirmer ma présence';
+      alert('Une erreur est survenue. Veuillez réessayer.');
+    }
+  }
+
+  function showSuccess() {
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('successMsg').classList.add('show');
+  }
+
+  // Retirer l'erreur dès que l'utilisateur saisit
+  ['nom','prenom','whatsapp','email'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById('field-' + id).classList.remove('has-error');
+    });
+  });
+</script>
+</body>
+</html>
