@@ -42,21 +42,29 @@
     background-position: center center;
     background-size: cover;
     background-repeat: no-repeat;
-    filter: brightness(1.08) saturate(0.95);
-    transform: scale(1.05);
-    animation: slowZoom 30s ease-in-out infinite alternate;
     z-index: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+
+  .bg-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.10);
+    pointer-events: none;
+    z-index: 1;
   }
 
   @keyframes slowZoom {
-    from { transform: scale(1.05); }
-    to   { transform: scale(1.12); }
+    from { transform: scale(1); }
+    to   { transform: scale(1.02); }
   }
 
   .bg-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 10, 5, 0.48);
+    background: rgba(15, 10, 5, 0.40);
     z-index: 2;
   }
 
@@ -65,7 +73,7 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at center, transparent 30%, rgba(10,7,3,0.35) 100%);
+      radial-gradient(ellipse at center, transparent 30%, rgba(10,7,3,0.28) 100%);
     z-index: 3;
   }
 
