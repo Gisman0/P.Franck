@@ -48,18 +48,6 @@
     z-index: 0;
   }
 
-  /* Fallback si pas de photo — dégradé luxueux */
-  .bg-photo::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 30% 40%, rgba(139, 105, 20, 0.35) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 80% at 75% 65%, rgba(90, 70, 20, 0.3) 0%, transparent 65%),
-      linear-gradient(160deg, #1a1005 0%, #0d0c08 50%, #120f0a 100%);
-    z-index: 0;
-  }
-
   @keyframes slowZoom {
     from { transform: scale(1.05); }
     to   { transform: scale(1.12); }
