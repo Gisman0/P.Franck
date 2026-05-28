@@ -502,6 +502,38 @@
   .field.has-error input { border-color: rgba(226,118,92,0.6); }
   .field.has-error .field-error { display: block; }
 
+  /* ── MODAL D'ACCUEIL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 8, 5, 0.95);
+    backdrop-filter: blur(15px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-content {
+    background: rgba(20, 15, 10, 0.8);
+    border: 1px solid var(--gold);
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+  }
+  .modal-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  /* Ajout d'ID pour le scroll */
+  #registrationSection, #tableSearchSection { scroll-margin-top: 40px; }
+
   /* ── SPINNER ── */
   .spinner {
     display: inline-block;
@@ -519,6 +551,22 @@
 </style>
 </head>
 <body>
+
+<!-- BOITE DE MESSAGE INITIALE -->
+<div id="welcomeModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2 class="form-title" style="margin-bottom: 20px; font-size: 2rem;">Bienvenue</h2>
+    <p style="font-size: 0.9rem; color: var(--gold-light); letter-spacing: 0.1em; text-transform: uppercase;">
+      Que souhaitez-vous faire ?
+    </p>
+    <div class="modal-btns">
+      <button class="btn-submit" onclick="closeModalAndScroll('registrationSection')">M'inscrire</button>
+      <button class="btn-submit" 
+              style="background: linear-gradient(135deg, #555 0%, var(--silver) 50%, #555 100%); color: var(--deep);" 
+              onclick="closeModalAndScroll('tableSearchSection')">Consulter ma table</button>
+    </div>
+  </div>
+</div>
 
 <!-- ARRIÈRE-PLAN -->
 <div class="bg-scene">
@@ -589,8 +637,31 @@
     </div>
   </div>
 
+  <!-- Section Recherche de Table -->
+  <section id="tableSearchSection" class="form-container" style="margin-bottom: 80px;">
+    <h2 class="form-title">Ma Place à Table</h2>
+    <p class="form-subtitle">Consulter mon numéro de table</p>
+    
+    <div class="form-card">
+      <div class="field">
+        <label for="searchName">Entrez votre Nom Complet</label>
+        <input type="text" id="searchName" placeholder="Ex: Jean DUPONT">
+      </div>
+      <button class="btn-submit" id="btnSearch" onclick="searchTable()" style="background: linear-gradient(135deg, #777 0%, var(--silver) 50%, #777 100%); color: var(--deep);">
+        Rechercher
+      </button>
+
+      <div id="searchResult" style="margin-top: 30px; text-align: center; display: none;">
+        <!-- Le résultat s'affichera ici -->
+        <p id="resultText" style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;"></p>
+        <h3 id="tableNum" style="font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); margin-top: 10px;"></h3>
+      </div>
+    </div>
+  </section>
+
+
   <!-- Formulaire -->
-  <section class="form-container">
+  <section id="registrationSection" class="form-container">
     <h2 class="form-title">Confirmer ma présence</h2>
     <p class="form-subtitle">Inscription des invités</p>
     <p class="form-deadline">⏳ Clôture des inscriptions : 15 Juin 2026</p>
@@ -655,7 +726,7 @@
   ────────────────────────────────────────── */
 
   // ① Collez ici l'URL de votre Google Apps Script Web App
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxieM6gJd1jkQEmKmwKCy3iO8wjPiXaJ82tbZLQA_oxrN7bHgro4IcaSSu3dlIYCdM2/exec';
+  const GOOGLE_SCRIPT_URL = 'VOTRE_NOUVELLE_URL_ICI';
 
   // ② Pour afficher votre photo en arrière-plan :
   //    - Hébergez la photo en ligne (Google Drive, Imgur, etc.)
@@ -786,6 +857,54 @@
       document.getElementById('field-' + id).classList.remove('has-error');
     });
   });
+
+  /* ──────────────────────────────────────────
+     LOGIQUE MODAL & RECHERCHE
+  ────────────────────────────────────────── */
+  function closeModalAndScroll(targetId) {
+    document.getElementById('welcomeModal').style.display = 'none';
+    const target = document.getElementById(targetId);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  async function searchTable() {
+    const name = document.getElementById('searchName').value.trim();
+    if (name.length < 2) return;
+
+    const btn = document.getElementById('btnSearch');
+    const resultDiv = document.getElementById('searchResult');
+    const resultText = document.getElementById('resultText');
+    const tableNum = document.getElementById('tableNum');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Recherche...';
+    resultDiv.style.display = 'none';
+
+    try {
+      // Note: On ajoute ?action=search pour que le script sache quoi faire
+      const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=search&name=${encodeURIComponent(name)}`);
+      const data = await response.json();
+
+      btn.disabled = false;
+      btn.innerHTML = 'Rechercher';
+      resultDiv.style.display = 'block';
+
+      if (data.table) {
+        resultText.textContent = "Trouvé ! Votre numéro de table est :";
+        tableNum.textContent = data.table;
+      } else {
+        resultText.textContent = "Aucune table trouvée pour ce nom. Veuillez vérifier l'orthographe.";
+        tableNum.textContent = "";
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = 'Rechercher';
+      resultDiv.style.display = 'block';
+      resultText.textContent = "Mode démo : La recherche sera active une fois le script configuré.";
+    }
+  }
 </script>
 </body>
 </html>
