@@ -12,19 +12,19 @@
     --gold: #C9A84C;
     --gold-light: #E8D5A3;
     --gold-dark: #8B6914;
-    --silver: #C0C0C0;
-    --silver-light: #E8E8E8;
-    --cream: #FAF7F0;
-    --deep: #1A1410;
+    --silver: #A0A0A0; /* Légèrement plus foncé pour un meilleur contraste sur fond clair */
+    --silver-light: #D0D0D0; /* Légèrement plus foncé pour un argent clair */
+    --bg-light: #FAF7F0; /* Nouvelle couleur de fond principale (anciennement --cream) */
+    --bg-dark: #1A1410; /* Nouvelle couleur de texte principale (anciennement --deep) */
     --text: #2C2418;
-    --overlay: rgba(15, 10, 5, 0.72);
+    --overlay-dark: rgba(15, 10, 5, 0.72); /* Gardé pour des usages spécifiques si nécessaire */
   }
 
   html, body {
     min-height: 100%;
     font-family: 'Lato', sans-serif;
-    background: var(--deep);
-    color: var(--cream);
+    background: var(--bg-light); /* Fond clair */
+    color: var(--bg-dark); /* Texte principal sombre */
     overflow-x: hidden;
   }
 
@@ -45,14 +45,7 @@
     z-index: 0;
   }
 
-  .bg-photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.10);
-    pointer-events: none;
-    z-index: 1;
-  }
+  /* Suppression de l'overlay blanc qui éclaircissait l'image */
 
   @keyframes slowZoom {
     from { transform: scale(1); }
@@ -62,7 +55,7 @@
   .bg-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 10, 5, 0.40);
+    background: rgba(26, 20, 16, 0.6); /* Overlay plus sombre pour un meilleur contraste */
     z-index: 2;
   }
 
@@ -70,8 +63,7 @@
   .bg-vignette {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(ellipse at center, transparent 30%, rgba(10,7,3,0.28) 100%);
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(26,20,16,0.5) 100%); /* Vignette plus sombre */
     z-index: 3;
   }
 
@@ -199,7 +191,7 @@
   .cross-svg {
     width: 64px;
     height: 64px;
-    filter: drop-shadow(0 0 18px rgba(201,168,76,0.5));
+    filter: drop-shadow(0 0 18px rgba(201,168,76,0.5)); /* Ombre plus prononcée pour le contraste */
   }
 
   @keyframes fadeScale {
@@ -317,7 +309,7 @@
     font-style: italic;
     font-size: 1.6rem;
     text-align: center;
-    color: var(--cream);
+    color: white;
     margin-bottom: 6px;
   }
 
@@ -506,7 +498,7 @@
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(10, 8, 5, 0.95);
+    background: rgba(250, 247, 240, 0.95); /* Fond clair translucide pour la modale */
     backdrop-filter: blur(15px);
     z-index: 9999;
     display: flex;
@@ -515,14 +507,14 @@
     padding: 20px;
   }
   .modal-content {
-    background: rgba(20, 15, 10, 0.8);
+    background: rgba(250, 247, 240, 0.9); /* Fond clair translucide pour le contenu de la modale */
     border: 1px solid var(--gold);
     padding: 40px;
     max-width: 450px;
     width: 100%;
     text-align: center;
     border-radius: 8px;
-    box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); /* Ombre réduite */
   }
   .modal-btns {
     display: flex;
@@ -540,7 +532,7 @@
     width: 16px;
     height: 16px;
     border: 2px solid rgba(20,15,5,0.3);
-    border-top-color: var(--deep);
+    border-top-color: var(--bg-dark); /* Couleur sombre pour le spinner */
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     margin-right: 8px;
@@ -556,13 +548,13 @@
 <div id="welcomeModal" class="modal-overlay">
   <div class="modal-content">
     <h2 class="form-title" style="margin-bottom: 20px; font-size: 2rem;">Bienvenue</h2>
-    <p style="font-size: 0.9rem; color: var(--gold-light); letter-spacing: 0.1em; text-transform: uppercase;">
+    <p style="font-size: 0.9rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">
       Que souhaitez-vous faire ?
     </p>
     <div class="modal-btns">
-      <button class="btn-submit" onclick="closeModalAndScroll('registrationSection')">M'inscrire</button>
+      <button class="btn-submit" onclick="closeModalAndScroll('registrationSection')" style="color: var(--bg-dark);">M'inscrire</button>
       <button class="btn-submit" 
-              style="background: linear-gradient(135deg, #555 0%, var(--silver) 50%, #555 100%); color: var(--deep);" 
+              style="background: linear-gradient(135deg, #555 0%, var(--silver) 50%, #555 100%); color: var(--bg-dark);" 
               onclick="closeModalAndScroll('tableSearchSection')">Consulter ma table</button>
     </div>
   </div>
@@ -581,7 +573,7 @@
 
   <!-- En-tête -->
   <header class="header">
-    <p class="pre-title">Vous êtes cordialement invité(e) à célébrer les</p>
+    <p class="pre-title">Vous êtes cordialement invité(e) à célébrer</p>
 
     <h1 class="main-title">
       Noces d'<span class="silver">Argent</span><br>Sacerdotales
@@ -645,7 +637,7 @@
     <div class="form-card">
       <div class="field">
         <label for="searchName">Entrez votre Nom Complet</label>
-        <input type="text" id="searchName" placeholder="Ex: Jean DUPONT">
+        <input type="text" id="searchName" placeholder=" BAKPE Espero">
       </div>
       <button class="btn-submit" id="btnSearch" onclick="searchTable()" style="background: linear-gradient(135deg, #777 0%, var(--silver) 50%, #777 100%); color: var(--deep);">
         Rechercher
@@ -715,7 +707,7 @@
       <span class="divider-cross" style="font-size:0.6rem">✦</span>
       <div class="divider-line" style="max-width:60px"></div>
     </div>
-    <p>25 ans de sacerdoce · Deo gratias</p>
+    <p style="color: white;">25 ans de sacerdoce · Deo gratias</p>
   </footer>
 
 </main>
