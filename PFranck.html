@@ -21,7 +21,7 @@
   }
 
   html, body {
-    height: 100%;
+    min-height: 100%;
     font-family: 'Lato', sans-serif;
     background: var(--deep);
     color: var(--cream);
@@ -865,7 +865,10 @@
     document.getElementById('welcomeModal').style.display = 'none';
     const target = document.getElementById(targetId);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      // Le délai permet au navigateur mobile de recalculer la page après la fermeture du modal
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   }
 
