@@ -643,10 +643,10 @@
         Rechercher
       </button>
 
-      <div id="searchResult" style="margin-top: 30px; text-align: center; display: none;">
+      <div id="searchResult" style="margin-top: 30px; text-align: center; display: none; color: white;">
         <!-- Le résultat s'affichera ici -->
         <p id="resultText" style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: white;"></p>
-        <h3 id="tableNum" style="font-family: 'Cinzel', serif; font-size: 3rem; color: white; margin-top: 10px;"></h3>
+        <h3 id="tableNum" style="font-family: 'Cinzel', serif; font-size: 3rem; color: white !important; margin-top: 10px; text-shadow: 0 0 10px rgba(255,255,255,0.3);"></h3>
       </div>
     </div>
   </section>
@@ -718,7 +718,7 @@
   ────────────────────────────────────────── */
 
   // ① Collez ici l'URL de votre Google Apps Script Web App
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjhOWGCYcFcJxSW6mj1nOXSm1bQs62UheGUdsqq6ZH2Hc77D2qSAqc8aWZO664ber_/exec';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywbHQ2iXlOiw292CVD997AB9LqU7MmGFfPJJOfxPyox9KGsWwU3dSr7AHP4YDBsKhi/exec';
 
   // ② Pour afficher votre photo en arrière-plan :
   //    - Hébergez la photo en ligne (Google Drive, Imgur, etc.)
@@ -865,17 +865,28 @@
   }
 
   async function searchTable() {
-    const name = document.getElementById('searchName').value.trim();
-    if (name.length < 2) return;
-
     const btn = document.getElementById('btnSearch');
     const resultDiv = document.getElementById('searchResult');
     const resultText = document.getElementById('resultText');
     const tableNum = document.getElementById('tableNum');
+    const name = document.getElementById('searchName').value.trim();
 
+    // Vérification : l'invité doit entrer au moins deux mots (Nom et Prénom)
+    const mots = name.split(/\s+/).filter(m => m.length > 0);
+    if (mots.length < 2) {
+      resultDiv.style.display = 'block';
+      resultText.style.color = "white";
+      resultText.textContent = "Veuillez entrer votre NOM et votre PRÉNOM (les deux) pour une recherche précise.";
+      tableNum.textContent = "";
+      return;
+    }
+
+    // Réinitialisation visuelle
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Recherche...';
     resultDiv.style.display = 'none';
+    tableNum.textContent = "";
+    resultText.textContent = "";
 
     try {
       // Note: On ajoute ?action=search pour que le script sache quoi faire
@@ -886,7 +897,8 @@
       btn.innerHTML = 'Rechercher';
       resultDiv.style.display = 'block';
 
-      if (data.table) {
+      resultText.style.color = "white";
+      if (data.table !== undefined && data.table !== null && data.table !== "") {
         resultText.textContent = "Trouvé ! Votre numéro de table est :";
         tableNum.textContent = data.table;
       } else {
